@@ -19,6 +19,7 @@ export default class LogInComponent extends Component {
       this.state.setCedula(valor.target.value)
       console.log(state)
     }
+    
   }
 }
 
