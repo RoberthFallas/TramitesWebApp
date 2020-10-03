@@ -1,23 +1,41 @@
 {
-  "name": "TramitesWebApp",
+  "name": "apprun-realworld-example-app",
   "version": "1.0.0",
-  "description": "",
+  "description": "> ### AppRun codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the [RealWorld](https://github.com/gothinkster/realworld) spec and API.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "jest": "jest",
+    "test": "jest --watch",
     "start": "webpack-dev-server --mode development",
-    "build": "webpack -p --mode production"
+    "build": "webpack -p --mode production",
+    "lint": "tslint -p .",
+    "rollup": "rollup -c",
+    "start:rollup": "rollup -c -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yysun/realworld-starter-kit.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yysun/realworld-starter-kit/issues"
+  },
+  "homepage": "https://github.com/yysun/realworld-starter-kit#readme",
   "devDependencies": {
-    "apprun": "^2.23.17",
-    "source-map-loader": "^1.1.0",
-    "ts-loader": "^8.0.3",
-    "typescript": "^4.0.2",
-    "webpack": "^4.44.1",
-    "webpack-cli": "^3.3.12",
-    "webpack-dev-server": "^3.11.0"
+    "@types/jest": "^25.1.3",
+    "apprun": "^2.22.2",
+    "jest": "^25.1.0",
+    "marked": "^0.8.0",
+    "source-map-loader": "^0.2.4",
+    "ts-jest": "^25.2.1",
+    "ts-loader": "^6.2.1",
+    "tslib": "^1.11.0",
+    "tslint": "^6.1.3",
+    "typescript": "^3.8.2",
+    "webpack": "^4.41.6",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
   }
 }
