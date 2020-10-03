@@ -151,7 +151,9 @@ class ProfileComponent extends Component {
 
     const date = new Intl.DateTimeFormat('en-GB');
 
-    let data = tramites;
+    console.log("dataaaa")
+
+    let data = dataTramites.getData();
  
     //format date fields
    /* data = data.map(v => ({
