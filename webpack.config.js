@@ -1,7 +1,7 @@
 const path = require('path');
 module.exports = {
   entry: {
-    'dist/app': './src/main.tsx',
+    'app': './src/main.ts',
   },
   output: {
     filename: '[name].js',
@@ -12,12 +12,10 @@ module.exports = {
   },
   module: {
     rules: [
-      { test: /\.tsx?$/, loader: 'ts-loader' },
+      { test: /.tsx?$/, loader: 'ts-loader' },
       { test: /\.js$/, use: ["source-map-loader"], enforce: "pre" }
     ]
   },
-  devServer: {
-    open: true
-  },
-  devtool: 'source-map'
+  externals: { apprun: 'apprun', marked: 'marked' },
+  devtool:'source-map'
 }
