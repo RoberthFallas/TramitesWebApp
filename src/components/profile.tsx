@@ -1,13 +1,55 @@
 import app, { Component, on } from 'apprun';
-import { auth } from '../api';
+import { auth, dataTramites } from '../api';
 
-declare interface IState {
+interface IState {
   user: null | object;
+  data: IData[];
+  showData: IData[];
 }
 
+interface IData {
+  id: number;
+  tramiteTipo: ITramiteTipo;
+  cliente: ICliente;
+  tramiteCambioEstados: ITramiteCambioEstado[];
+}
+interface ICliente {
+  id: number;
+  nombreCompleto: string;
+  cedula: string;
+  telefono: string;
+  direccion: string;
+  estado: boolean;
+  fechaRegistro: string;
+  fechaModificacion:string;
+
+}
+interface ITramiteCambioEstado{
+  id: number;
+  tramiteEstado: ITramiteEstado;
+  fechaRegistro: string;
+}
+
+interface ITramiteEstado{
+  id: number;
+  nombre: string;
+  descripcion: string;
+  estadosSucesores: string;
+}
+interface ITramiteTipo{
+  id: string;
+  descripcion: string;
+  fechaRegistro: string;
+  fechaModificacion: string;
+  estado: boolean;
+  departamento: string;
+
+}
 class ProfileComponent extends Component {
   public state: IState = {
     user: null,
+    data: [],
+    showData: [],
   };
 
   /** render view **/
@@ -53,38 +95,15 @@ class ProfileComponent extends Component {
             <thead>
               <tr>
                 <th scope="col">ID</th>
-                <th scope="col">Created At</th>
-                <th scope="col">Updated At</th>
-                <th scope="col">State</th>
-                <th scope="col">Description</th>
+                <th scope="col">Tipo</th>
+                <th scope="col">Cliente</th>
+                <th scope="col">Estado</th>
+
               </tr>
             </thead>
 
             <tbody>
-            <tr>
-                <td>Tiger Nixon</td>
-                <td>System Architect</td>
-                <td>Edinburgh</td>
-                <td>61</td>
-                <td>2011/04/25</td>
-               
-            </tr>
-            <tr>
-                <td>Garrett Winters</td>
-                <td>Accountant</td>
-                <td>Tokyo</td>
-                <td>63</td>
-                <td>2011/07/25</td>
-               
-            </tr>
-            <tr>
-                <td>Ashton Cox</td>
-                <td>Junior Technical Author</td>
-                <td>San Francisco</td>
-                <td>66</td>
-                <td>2009/01/12</td>
-           
-            </tr>
+            {this.printTable()}
             </tbody>
           </table>
         </div>
@@ -92,18 +111,61 @@ class ProfileComponent extends Component {
     );
   };
 
+  private printTable() {
+    // not found results
+    if (!this.state.showData.length) {
+      return (
+        <tr>
+          <td colSpan={4}>Nothing here :( </td>
+        </tr>
+      );
+    }
+
+    return this.state.showData.map(item => {
+      return (
+        <tr>
+          <th scope="row">{item.id}</th>
+          <td>{item.tramiteTipo.descripcion}</td>
+          <td>{item.cliente.nombreCompleto}</td>
+          <td>{item.tramiteCambioEstados[0].tramiteEstado.descripcion}</td>
+        </tr>
+      );
+    });
+  }
+
   // update user data (listen global event)
   @on('/set-user')
   private onSetUser(state, user) {
     return { ...state, user };
   }
 
+  
+
   @on('#/profile')
   private async root(state) {
     // redirect to login page, isn't authenticated
+    
     if (!state.user) {
       return (window.location.hash = '#/login');
     }
+
+    const date = new Intl.DateTimeFormat('en-GB');
+
+    let data = tramites;
+ 
+    //format date fields
+   /* data = data.map(v => ({
+      ...v,
+      fechaRegistro: date.format(new Date(v.fechaRegistro)),
+      fechaModificacion: date.format(new Date(v.fechaModificacion)),
+    }));*/
+
+    return {
+      ...state,
+      data,
+      showData: data,
+    };
+
 
     return state;
   }

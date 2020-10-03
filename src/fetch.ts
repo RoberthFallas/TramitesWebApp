@@ -25,9 +25,12 @@ export async function fetchAsync(
   const headers = { 'Content-Type': 'application/json' };
 
   // add authorization header
-  if (!!config.ACCESS_TOKEN) {
+  if (config.ACCESS_TOKEN) {
+
     headers['Authorization'] = `Bearer ${config.ACCESS_TOKEN}`;
   }
+
+  
 
   // execute request
   const response = await window.fetch(`${config.BASE_PATH}${url}`, {
@@ -44,13 +47,13 @@ export async function fetchAsync(
 
   // convert response to json
   const result = await response.json();
-
+ 
   // error
   if (!response.ok) {
     throw result;
   }
 
-  return result;
+  return await result;
 }
 
 /** GET request **/

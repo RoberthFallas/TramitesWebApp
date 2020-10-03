@@ -1,24 +1,34 @@
 import app from 'apprun';
-import { get, post, del, put } from './fetch';
+import { get, post, del, put , setToken} from './fetch';
 
 export const auth = {
 
   /** login user **/
   signIn(user: { cedula: string; password: string }) {
     return post<any>('/autenticacion/login', user );
-  }
+  },
+
+  
+ 
 };
 
+
+export const dataTramites = {
+  getData() {
+    let data = get<any>('/tramites_registrados');
+ 
+  	return data;
+  }
+};
 
 
 // set user data
 app.on('/set-user', user => {
   // for global access
   app['user'] = user;
-  console.log("from user global")
-  console.log(user.jwt)
-  console.log(user.usuario)
+ 
 
   // update token in local storage
-  //setToken(user ? user.jwt : null);
+  setToken(user ? user.jwt : null);
 });
+

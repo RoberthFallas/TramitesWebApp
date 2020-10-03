@@ -1,5 +1,5 @@
 import app, { Component, on } from 'apprun';
-import { auth } from '../api';
+import { auth , dataTramites} from '../api';
 
 interface IState {
 	user: null;
@@ -103,13 +103,14 @@ class LoginComponent extends Component {
 			const data = await auth.signIn({ cedula: form.username , password: form.password });
 			// update user data
 			data.usuario = form.username;
-			console.log(data.jwt)
-			console.log(data.usuario)
+
 
 
 			app.run('/set-user', data);
+
+			app['tramites'] = await dataTramites.getData();
+		
 			
-			console.log(data)
 
 			// redirect to home page
 			window.location.hash = '#/profile';
