@@ -15,8 +15,8 @@ export const auth = {
 
 export const dataTramites = {
   getData() {
-    let data = get<any>('/tramites_registrados');
- 
+    let data =  get<any>('/tramites_registrados');
+
   	return data;
   }
 };
@@ -25,10 +25,17 @@ export const dataTramites = {
 // set user data
 app.on('/set-user', user => {
   // for global access
+  console.log("SET USER FATHER EVENT")
   app['user'] = user;
  
 
   // update token in local storage
   setToken(user ? user.jwt : null);
+});
+
+app.on('/set-data', data => {
+  console.log("SET DATA FATHER EVENT")
+  app['tramites'] = data;
+ 
 });
 

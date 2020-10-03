@@ -28,7 +28,7 @@ class HeaderComponent extends Component {
               <>
                 <li class="nav-item">
                   <a class="nav-link" href="javascript:void(0)" title="Username">
-                    {user.usuario}
+                    {user.usuario.cedula}
                     <svg
                       aria-hidden="true"
                       focusable="false"
