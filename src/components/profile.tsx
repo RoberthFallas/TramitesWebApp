@@ -1,50 +1,14 @@
 import app, { Component, on } from 'apprun';
 import { auth, dataTramites } from '../api';
+import {  IData  } from '../models';
 
 interface IState {
   user: null | object;
-  data: IData[];
-  showData: IData[];
+  data: null | IData[];
+  showData: null | IData[];
 }
 
-interface IData {
-  id: number;
-  tramiteTipo: ITramiteTipo;
-  cliente: ICliente;
-  tramiteCambioEstados: ITramiteCambioEstado[];
-}
-interface ICliente {
-  id: number;
-  nombreCompleto: string;
-  cedula: string;
-  telefono: string;
-  direccion: string;
-  estado: boolean;
-  fechaRegistro: string;
-  fechaModificacion:string;
 
-}
-interface ITramiteCambioEstado{
-  id: number;
-  tramiteEstado: ITramiteEstado;
-  fechaRegistro: string;
-}
-
-interface ITramiteEstado{
-  id: number;
-  nombre: string;
-  descripcion: string;
-  estadosSucesores: string;
-}
-interface ITramiteTipo{
-  id: string;
-  descripcion: string;
-  fechaRegistro: string;
-  fechaModificacion: string;
-  estado: boolean;
-  departamento: string;
-
-}
 class ProfileComponent extends Component {
   public state: IState = {
     user: null,
@@ -58,7 +22,6 @@ class ProfileComponent extends Component {
     if (!state.user) {
       return;
     }
-    console.log(state.user.usuario)
 
     return (
       <>
@@ -113,7 +76,7 @@ class ProfileComponent extends Component {
 
   private printTable() {
     // not found results
-    if (!this.state.showData.length) {
+    if (!this.state.showData || this.state.showData.length==0) {
       return (
         <tr>
           <td colSpan={4}>Nothing here :( </td>
@@ -136,8 +99,18 @@ class ProfileComponent extends Component {
   // update user data (listen global event)
   @on('/set-user')
   private onSetUser(state, user) {
+    console.log("in set-user")
     return { ...state, user };
   }
+
+  @on('/set-data')
+  private onSetData(state, data) {
+    console.log("in set-data")
+    state.data = data
+    state.showData = data
+    return { ...state, data };
+  }
+
 
   
 
@@ -151,10 +124,8 @@ class ProfileComponent extends Component {
 
     const date = new Intl.DateTimeFormat('en-GB');
 
-    console.log("dataaaa")
 
-    let data = dataTramites.getData();
- 
+
     //format date fields
    /* data = data.map(v => ({
       ...v,
@@ -163,9 +134,7 @@ class ProfileComponent extends Component {
     }));*/
 
     return {
-      ...state,
-      data,
-      showData: data,
+      ...state
     };
 
 

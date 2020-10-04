@@ -100,17 +100,14 @@ class LoginComponent extends Component {
 
 		try {
 			// execute request
-			const data = await auth.signIn({ cedula: form.username , password: form.password });
-			// update user data
-			data.usuario = form.username;
+			const user = await auth.signIn({ cedula: form.username , password: form.password });
+			app.run('/set-user', user);
+			const data = await dataTramites.getData()
 
+			console.log(data)
+			// update user data	
+			app.run('/set-data',data);
 
-
-			app.run('/set-user', data);
-
-			app['tramites'] = await dataTramites.getData();
-		
-			
 
 			// redirect to home page
 			window.location.hash = '#/profile';
