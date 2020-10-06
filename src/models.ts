@@ -6,6 +6,8 @@ export interface IData {
     tramiteTipo: ITramiteTipo;
     cliente: ICliente;
     tramiteCambioEstados: ITramiteCambioEstado[];
+    fechaRegistro: string;
+    estadoActual: string;
 }
 export interface ICliente {
     id: number;

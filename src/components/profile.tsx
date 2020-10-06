@@ -1,12 +1,13 @@
 import app, { Component, on } from 'apprun';
 import { auth, dataTramites } from '../api';
 import {  IData  } from '../models';
-
+type IKeys = {propiedad: string; key: string} | string | {propiedad: IKeys; key: string} ;
 interface IState {
   user: null | object;
   data: null | IData[];
   showData: null | IData[];
 }
+
 
 
 class ProfileComponent extends Component {
@@ -15,7 +16,7 @@ class ProfileComponent extends Component {
     data: [],
     showData: [],
   };
-
+  private keysDeBusqueda: IKeys[] = ['id', {propiedad: 'cliente', key: 'cedula'},{propiedad: 'tramiteTipo', key: 'descripcion'}, 'fechaRegistro', 'estadoActual' ]
   /** render view **/
   private view = function (state) {
     // not authenticated
@@ -61,6 +62,7 @@ class ProfileComponent extends Component {
                 <th scope="col">Tipo</th>
                 <th scope="col">Cliente</th>
                 <th scope="col">Estado</th>
+                <th scope="col">Fecha Registro</th>
 
               </tr>
             </thead>
@@ -89,12 +91,15 @@ class ProfileComponent extends Component {
         <tr>
           <th scope="row">{item.id}</th>
           <td>{item.tramiteTipo.descripcion}</td>
-          <td>{item.cliente.nombreCompleto}</td>
-          <td>{item.tramiteCambioEstados[0].tramiteEstado.descripcion}</td>
+          <td>{item.cliente.cedula}</td>
+          <td>{item.estadoActual}</td>
+          <td>{item.fechaRegistro}</td>
         </tr>
       );
     });
   }
+
+  
 
   // update user data (listen global event)
   @on('/set-user')
@@ -106,13 +111,84 @@ class ProfileComponent extends Component {
   @on('/set-data')
   private onSetData(state, data) {
     console.log("in set-data")
+
+
     state.data = data
-    state.showData = data
+  
+    const date = new Intl.DateTimeFormat('en-GB');
+
+    data = data.map(v => ({
+      ...v,
+      fechaRegistro: date.format(new Date(v.fechaRegistro)),
+      
+    }));
+    state.showData = data;
+    state.data = data;
+
+    this.estadoActual();
+    
     return { ...state, data };
   }
 
+  private estadoActual(){
+
+    for(let item of this.state.data){
+
+      item.estadoActual = item.tramiteCambioEstados[item.tramiteCambioEstados.length-1].tramiteEstado.descripcion;
+    }
+
+    this.state.showData = this.state.data;
+
+  }
+
+  private evaluarKey(propiedad: string ){
+    let resultado = {isObject: false, propiedad: ''}
+
+    const isIncluida = this.keysDeBusqueda.some(
+      value=>{
+        if(typeof value == 'string'){
+          resultado = {isObject: false, propiedad: value};
+          return propiedad == value;
+        }
+        resultado = {isObject: true, propiedad: value.key}
+        return value.propiedad == propiedad;
+      }
+    );
+    return {isIncluida, resultado}
+  }
 
   
+  @on('search')
+  private onSearch(state, value) {
+    // filter by this props
+    const keys = ['id', 'tramiteTipo'];
+
+    const showData = state.data.filter(item => {
+      // indicates if the typed value has been found in a property of the current item
+      let found = false;
+    
+      for (const key in item) {
+        
+      
+          const {isIncluida, resultado} = this.evaluarKey(key);
+
+          const itemValue = !resultado.isObject ? item[key] : item[key][resultado.propiedad]
+
+          found = isIncluida && itemValue.toString().includes(value.toUpperCase());
+
+
+       
+        if(found){
+          break;
+        }
+        
+      }
+
+      return found;
+    });
+
+    return { ...state, showData };
+  }
 
   @on('#/profile')
   private async root(state) {
@@ -122,16 +198,11 @@ class ProfileComponent extends Component {
       return (window.location.hash = '#/login');
     }
 
-    const date = new Intl.DateTimeFormat('en-GB');
-
+   
 
 
     //format date fields
-   /* data = data.map(v => ({
-      ...v,
-      fechaRegistro: date.format(new Date(v.fechaRegistro)),
-      fechaModificacion: date.format(new Date(v.fechaModificacion)),
-    }));*/
+    
 
     return {
       ...state
