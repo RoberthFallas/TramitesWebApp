@@ -1,6 +1,6 @@
 import app, { Component, on } from 'apprun';
 import { auth, dataTramites } from '../api';
-import {  IData  } from '../models';
+import { IData } from '../models';
 
 interface IState {
   user: null | object;
@@ -25,7 +25,7 @@ class ProfileComponent extends Component {
 
     return (
       <>
-        
+
         <div class="input-group my-2" style="width: 300px">
           <div class="input-group-prepend">
             <div class="input-group-text">
@@ -61,12 +61,13 @@ class ProfileComponent extends Component {
                 <th scope="col">Tipo</th>
                 <th scope="col">Cliente</th>
                 <th scope="col">Estado</th>
-
+                <th scope="col">Modificacion
+                </th>
               </tr>
             </thead>
 
             <tbody>
-            {this.printTable()}
+              {this.printTable()}
             </tbody>
           </table>
         </div>
@@ -76,7 +77,7 @@ class ProfileComponent extends Component {
 
   private printTable() {
     // not found results
-    if (!this.state.showData || this.state.showData.length==0) {
+    if (!this.state.showData || this.state.showData.length == 0) {
       return (
         <tr>
           <td colSpan={4}>Nothing here :( </td>
@@ -91,6 +92,13 @@ class ProfileComponent extends Component {
           <td>{item.tramiteTipo.descripcion}</td>
           <td>{item.cliente.nombreCompleto}</td>
           <td>{item.tramiteCambioEstados[0].tramiteEstado.descripcion}</td>
+          <td>
+            <select name="select">
+              <option value="Anulado">Anulado</option>
+              <option value="Entregado" selected>Entregado</option>
+              <option value="Finalizdo">Finalizdo</option>
+            </select>
+          </td>
         </tr>
       );
     });
@@ -112,12 +120,12 @@ class ProfileComponent extends Component {
   }
 
 
-  
+
 
   @on('#/profile')
   private async root(state) {
     // redirect to login page, isn't authenticated
-    
+
     if (!state.user) {
       return (window.location.hash = '#/login');
     }
@@ -127,11 +135,11 @@ class ProfileComponent extends Component {
 
 
     //format date fields
-   /* data = data.map(v => ({
-      ...v,
-      fechaRegistro: date.format(new Date(v.fechaRegistro)),
-      fechaModificacion: date.format(new Date(v.fechaModificacion)),
-    }));*/
+    /* data = data.map(v => ({
+       ...v,
+       fechaRegistro: date.format(new Date(v.fechaRegistro)),
+       fechaModificacion: date.format(new Date(v.fechaModificacion)),
+     }));*/
 
     return {
       ...state

@@ -72,7 +72,6 @@ class LoginComponent extends Component {
 		if (!!app['user']) {
 			return (window.location.hash = '#/');
 		}
-
 		return state;
 	}
 
