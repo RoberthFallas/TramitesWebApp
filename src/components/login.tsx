@@ -1,5 +1,5 @@
 import app, { Component, on } from 'apprun';
-import { auth , dataTramites} from '../api';
+import { auth , dataTramites, estdosDisp} from '../api';
 
 interface IState {
 	user: null;
@@ -102,11 +102,14 @@ class LoginComponent extends Component {
 			const user = await auth.signIn({ cedula: form.username , password: form.password });
 			app.run('/set-user', user);
 			const data = await dataTramites.getData()
-
 			console.log(data)
 			// update user data	
 			app.run('/set-data',data);
 
+			// charging estados
+			const estados = await estdosDisp.getEstadosDisponible();
+			console.log(estados);
+			app.run('/set-Estados',estdosDisp);
 
 			// redirect to home page
 			window.location.hash = '#/profile';

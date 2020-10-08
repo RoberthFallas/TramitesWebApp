@@ -6,6 +6,7 @@ interface IState {
   user: null | object;
   data: null | IData[];
   showData: null | IData[];
+  itemSelected :any;
 }
 
 
@@ -14,6 +15,8 @@ class ProfileComponent extends Component {
     user: null,
     data: [],
     showData: [],
+    itemSelected :null
+    //tramiteEstados: null | ItramiteEstado[];
   };
 
   /** render view **/
@@ -77,6 +80,8 @@ class ProfileComponent extends Component {
 
   private printTable() {
     // not found results
+    let estList = app["TiposTramites"];
+    console.log("PROFILE" + estList);
     if (!this.state.showData || this.state.showData.length == 0) {
       return (
         <tr>
@@ -119,33 +124,28 @@ class ProfileComponent extends Component {
     return { ...state, data };
   }
 
-
+  @on('/set-Estados')
+  private onSetEstados(state, tramiteEstados) {
+    return { ...state, tramiteEstados };
+  }
 
 
   @on('#/profile')
   private async root(state) {
     // redirect to login page, isn't authenticated
-
     if (!state.user) {
       return (window.location.hash = '#/login');
     }
-
     const date = new Intl.DateTimeFormat('en-GB');
-
-
-
     //format date fields
     /* data = data.map(v => ({
        ...v,
        fechaRegistro: date.format(new Date(v.fechaRegistro)),
        fechaModificacion: date.format(new Date(v.fechaModificacion)),
      }));*/
-
     return {
       ...state
     };
-
-
     return state;
   }
 }

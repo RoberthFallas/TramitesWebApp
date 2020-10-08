@@ -14,13 +14,12 @@ export const auth = {
 export const dataTramites = {
   getData() {
     let data = get<any>('/tramites_registrados');
-
     return data;
   }
 };
 
 export const estdosDisp = {
-  getEstadosDisponible(){
+  getEstadosDisponible() {
     let data = get<any>('/tipo_tramite/getAll');
     return data;
   }
@@ -41,5 +40,10 @@ app.on('/set-data', data => {
   console.log("SET DATA FATHER EVENT")
   app['tramites'] = data;
 
+});
+
+app.on('/set-Estados', tipTram => {
+  console.log("Estados Loaded")
+  app['TiposTramites'] = tipTram;
 });
 
