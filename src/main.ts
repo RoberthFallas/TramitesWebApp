@@ -3,6 +3,7 @@ import app from 'apprun';
 // user global property
 app['user'] = null;
 app['tramites'] = null;
+app['estados'] = null;
 
 // import components
 import './components/profile';

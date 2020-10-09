@@ -22,6 +22,23 @@ export const dataTramites = {
 };
 
 
+export const modificarEstado= {
+  modificar(idTramite: string, idEstado: string){
+    let url:string = '/tramiteCambiEstado/actulizarTramiteNuevo/'+idTramite+"/"+idEstado;
+
+    return get<any>(url);
+  }
+}
+
+export const tramitesEstados = {
+  getEstados(){
+    let data = get<any>('/tramites_estados');
+      return data;
+
+  }  
+}
+
+
 // set user data
 app.on('/set-user', user => {
   // for global access
@@ -36,6 +53,12 @@ app.on('/set-user', user => {
 app.on('/set-data', data => {
   console.log("SET DATA FATHER EVENT")
   app['tramites'] = data;
+ 
+});
+
+
+app.on('/set-estados', data => {
+  app['estados'] = data;
  
 });
 
