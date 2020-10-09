@@ -135,7 +135,7 @@ class LoginComponent extends Component {
 			app.run('/set-estados', estados);
 
 
-			
+			this.run('loading', false);
 			window.location.hash = '#/profile';
 		} catch (err) {
 			console.log(err)
