@@ -1,8 +1,10 @@
 import app, { Component, on } from 'apprun';
-import { auth , dataTramites} from '../api';
+import { auth , dataTramites, tramitesEstados} from '../api';
 
 interface IState {
 	user: null;
+	loading: boolean;
+	alertar: boolean;
 	form: {
 		username: string;
 		password: string;
@@ -12,21 +14,34 @@ interface IState {
 class LoginComponent extends Component {
 	public state: IState = {
 		user: null,
+		loading: false,
+		alertar: false,
+
 		form: {
 			username: '',
 			password: '',
+			
 		},
 	};
 
-	/** render view **/
 	private view = function (state) {
-		// user logged (or loading user data), no render page
+	
 		if (!!app['user']) {
 			return;
 		}
 
 		return (
 			<div class="row mt-3">
+
+				{!!state.alert &&(
+
+					<div>
+					<div class="alert alert-danger" role="alert">
+                       ¡Credenciales invalidas!
+                    </div>
+					</div>
+					
+				)}
 				<div class="col-6 offset-3">
 					<form onsubmit={e => this.run('submit', e)}>
 						<div class="form-group">
@@ -52,8 +67,8 @@ class LoginComponent extends Component {
 							/>
 						</div>
 
-						<button type="submit" class="btn btn-primary">
-							Submit
+						<button type="submit" class="btn btn-primary" disabled={state.loading}>
+							{!state.loading ? 'Submit' : 'Loading...'}
 						</button>
 					</form>
 				</div>
@@ -61,14 +76,23 @@ class LoginComponent extends Component {
 		);
 	};
 
-	/** verify if the inputs are valid **/
+	@on('loading')
+	private onLoading(state, loading) {
+		return { ...state, loading };
+	}
+
+	@on('alertar')
+	private onAlert(state, alertar) {
+		return { ...state, alertar };
+	}
+	
 	private inputsValid() {
 		return !!this.state.form.username && !!this.state.form.password;
 	}
 
 	@on('#/login')
 	private async root(state) {
-		// user logged, redirect to home page
+		
 		if (!!app['user']) {
 			return (window.location.hash = '#/');
 		}
@@ -76,22 +100,22 @@ class LoginComponent extends Component {
 		return state;
 	}
 
-	// inputs typing
+	
 	@on('type')
 	private onInputType(state, event) {
 		const { name } = event.target;
 
-		// update state
+	
 		return { ...state, form: { ...state.form, [name]: event.target.value } };
 	}
 
-	// submit form
+	
 	@on('submit')
 	private async onSubmit(state, event) {
-		// not reloading page
+		
 		event.preventDefault();
 
-		// not execute request, inputs are invalid
+		
 		if (!this.inputsValid()) {
 			return;
 		}
@@ -99,24 +123,28 @@ class LoginComponent extends Component {
 		const { form } = state;
 
 		try {
-			// execute request
-			const data = await auth.signIn({ cedula: form.username , password: form.password });
-			// update user data
-			data.usuario = form.username;
-
-
-
-			app.run('/set-user', data);
-
-			app['tramites'] = await dataTramites.getData();
-		
+			this.run('loading', true);
 			
+			const user = await auth.signIn({ cedula: form.username , password: form.password });
+			app.run('/set-user', user);
+			const data = await dataTramites.getData()
+			console.log(data)
+			app.run('/set-data',data);
+			
+			const estados = await tramitesEstados.getEstados();
+			app.run('/set-estados', estados);
 
-			// redirect to home page
+
+			this.run('loading', false);
 			window.location.hash = '#/profile';
 		} catch (err) {
-			console.log(err);
-		}
+			console.log(err)
+			
+			
+			
+			
+		} 
+		
 	}
 }
 

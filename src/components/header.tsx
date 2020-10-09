@@ -28,7 +28,7 @@ class HeaderComponent extends Component {
               <>
                 <li class="nav-item">
                   <a class="nav-link" href="javascript:void(0)" title="Username">
-                    {user.usuario}
+                    {user.usuario.cedula}
                     <svg
                       aria-hidden="true"
                       focusable="false"
@@ -47,7 +47,7 @@ class HeaderComponent extends Component {
                 </li>
 
                 <li class="nav-item">
-                  <a class="nav-link" href="#" onclick={() => this.run('logout')} title="Close session">
+                  <a class="nav-link" href="#" onclick={() => this.run('logout')} title="Cerrar Sesion">
                     Logout
                     <svg
                       aria-hidden="true"
@@ -75,10 +75,10 @@ class HeaderComponent extends Component {
 
   @on('logout')
   private onLogout = state => {
-    // remove user data
+   
     app.run('/set-user', null);
 
-    // redirect to login page
+   
     document.location.hash = '#/login';
   };
 

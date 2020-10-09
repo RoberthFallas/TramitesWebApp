@@ -10,9 +10,10 @@ export function setToken(token: string) {
   token = !token ? null : token;
 
   // update token
+  console.log("update tokem")
   config.ACCESS_TOKEN = token;
 
-  // update/remove in local storage
+    // update/remove in local storage
  
 }
 
@@ -30,7 +31,7 @@ export async function fetchAsync(
     headers['Authorization'] = `Bearer ${config.ACCESS_TOKEN}`;
   }
 
-  
+
 
   // execute request
   const response = await window.fetch(`${config.BASE_PATH}${url}`, {
@@ -47,7 +48,7 @@ export async function fetchAsync(
 
   // convert response to json
   const result = await response.json();
- 
+
   // error
   if (!response.ok) {
     throw result;
